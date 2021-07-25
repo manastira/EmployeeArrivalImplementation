@@ -11,11 +11,11 @@
 
 
     function reloadFunc() {
-        debugger;
+        
         window.Location.reload();
     }
     $(document).on('click', '#submitModalNew', function (e) {
-        debugger;
+        
         e.preventDefault();
         $.ajax({
             type: "GET",
@@ -26,7 +26,7 @@
             processData: false,
             cache: false,
             success: function (result, status, request) {
-                debugger;
+                
                 $.ajax({
                     type: "GET",
                     url: "api/clients/subscribe?date=2016-03-10&callback=" + `${window.location.href}api/clients/employees`,
@@ -36,7 +36,7 @@
                     processData: false,
                     cache: false,
                     success: function (result, status, request) {
-                        debugger;
+                        
                         window.location.reload();
                     },
 
@@ -58,32 +58,36 @@
 
 
     $(document).on('click', '#filterGrid', function (e) {
-        debugger;
+        
         e.preventDefault();
-
-
-
-        $.ajax({
-            type: "GET",
-            url: `api/clients/Filter?searchResults=${$("#textFilter").val()}`,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (result, status, request) {
-                debugger;
-                let searchResult = result == null ? -1 : result.EmployeeId;
-
-                var options = {};
-                options.url = `/Home/Index?searchResults=${searchResult}`;
-                options.type = "GET";
-                options.contentType = "application/json";
-                options.dataType = "json";
-                $.ajax(options)
-
-            },
-            error: function (a, b, c) {
-
-            }
+        let id = $("#textFilter").val();
+        $.post("Home/Filter", { searchResults: id }, function (result) {
+            
+            window.location.href = result.Url
         });
+
+
+        //$.ajax({
+        //    type: "GET",
+        //    url: `/Home/Filter?searchResults=${$("#textFilter").val()}`,
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json",
+        //    success: function (result, status, request) {
+        //        
+        //        let searchResult = result == null ? -1 : result.EmployeeId;
+
+        //        var options = {};
+        //        options.url = `/Home/Index?searchResults=${searchResult}`;
+        //        options.type = "GET";
+        //        options.contentType = "application/json";
+        //        options.dataType = "json";
+        //        $.ajax(options)
+
+        //    },
+        //    error: function (a, b, c) {
+
+        //    }
+        //});
 
     });
 
