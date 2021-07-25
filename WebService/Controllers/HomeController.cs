@@ -19,14 +19,24 @@ namespace WebService.Controllers
         #endregion
 
         #region Actions
-        [System.Web.Http.HttpGet]
+        [HttpGet]
         public ActionResult Index(string searchResults)
-        {         
+        {
             IEnumerable<EmployeeData> model = (searchResults == null || searchResults == "-1") ? _repository.GetAll() : new List<EmployeeData>() { _repository.GetById(Convert.ToInt32(searchResults)) };
-            _repository.Save();          
-           
+            _repository.Save();
+
             return View(model);
         }
+
+        //filter action
+        [HttpPost]
+        public ActionResult Filter(string searchResults)
+        {
+            //Some logic to persist the change to DB.
+            string redirectUrl = Url.Action("Index", "Home", new { searchResults = searchResults });
+            return Json(new { Url = redirectUrl });
+        }
+
         #endregion
 
         #region Run Console app txt -> json
