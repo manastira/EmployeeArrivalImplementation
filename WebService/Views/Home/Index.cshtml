@@ -1,0 +1,146 @@
+﻿@model IEnumerable<WebService.Models.EmployeeData>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+
+<script type="text/javascript">
+
+
+    function reloadFunc() {
+        debugger;
+        window.Location.reload();
+    }
+    $(document).on('click', '#submitModalNew', function (e) {
+        debugger;
+        e.preventDefault();
+        $.ajax({
+            type: "GET",
+            url: "api/clients/getToken",
+            async: false,
+            beforeSend: function (headerSet) { headerSet.setRequestHeader('Accept-Client', 'Fourth-Monitor'); },
+            contentType: "application/json; charset=utf-8",
+            processData: false,
+            cache: false,
+            success: function (result, status, request) {
+                debugger;
+                $.ajax({
+                    type: "GET",
+                    url: "api/clients/subscribe?date=2016-03-10&callback=" + `${window.location.href}api/clients/employees`,
+                    async: false,
+                    beforeSend: function (headerSet) { headerSet.setRequestHeader('Accept-Client', result.hashToken); },
+                    contentType: "application/json; charset=utf-8",
+                    processData: false,
+                    cache: false,
+                    success: function (result, status, request) {
+                        debugger;
+                        window.location.reload();
+                    },
+
+                    error: function (a, b, c) {
+
+                    }
+                });
+            },
+
+            error: function (a, b, c) {
+
+            }
+        });
+
+    });
+
+
+
+
+
+    $(document).on('click', '#filterGrid', function (e) {
+        debugger;
+        e.preventDefault();
+
+
+
+        $.ajax({
+            type: "GET",
+            url: `api/clients/Filter?searchResults=${$("#textFilter").val()}`,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (result, status, request) {
+                debugger;
+                let searchResult = result == null ? -1 : result.EmployeeId;
+
+                var options = {};
+                options.url = `/Home/Index?searchResults=${searchResult}`;
+                options.type = "GET";
+                options.contentType = "application/json";
+                options.dataType = "json";
+                $.ajax(options)
+
+            },
+            error: function (a, b, c) {
+
+            }
+        });
+
+    });
+
+
+</script>
+
+
+<style>
+
+
+    .grid {
+        margin: 0;
+        border-collapse: collapse;
+        width: 100%;
+        font-family: 'Times New Roman', serif;
+        text-align: center
+    }
+
+        .grid th, .grid td {
+            border: 1px solid #C0C0C0;
+            padding: 5px;
+        }
+
+
+    .head {
+        background-color: #E8E8E8;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .alt {
+        background-color: #f8f8f8;
+        color: #000;
+    }
+</style>
+<p style="margin-top:15px">
+    @Html.ActionLink("Run JOSN Converter", "RunApp", "Home", new { @class = "btn btn-success" })
+    <button id="submitModalNew" type="submit" class="btn btn-success">Run Simulation</button>
+
+
+</p>
+
+
+<p>
+
+    @Html.TextBox("Search button", null, new { @class = "form-control", id = "textFilter" })
+</p>
+<p>
+    <button id="filterGrid" type="submit" class="btn btn-success">Filter grid by EmployeeId</button>
+</p>
+
+
+
+
+@{
+    Html.RenderPartial("_Grid", Model);
+
+}
+
+

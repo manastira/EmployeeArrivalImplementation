@@ -1,0 +1,29 @@
+﻿@model IEnumerable<WebService.Models.EmployeeData>
+@{
+    var grid = new WebGrid(Model, rowsPerPage: 10);
+}
+
+<table class="table table-striped">
+    @grid.GetHtml(
+          tableStyle: "grid",
+          headerStyle: "head",
+          alternatingRowStyle: "alt",
+          fillEmptyRows: false,
+          displayHeader: true,
+          caption: "Arrival Employees",
+          emptyRowCellValue: "-",
+          nextText: "Next emp",
+          previousText: "Previous emp",
+          mode: WebGridPagerModes.All,
+             columns: grid.Columns
+             (
+                 grid.Column("EmployeeId"),
+                 grid.Column("DateWhen"),
+                 grid.Column("Role"),
+                 grid.Column("Email"),
+                 grid.Column(format: @<a href="~/api/clients/DeleteEmployee?id=@item.EmployeeId">Delete</a>)
+
+                                           )
+                                           )
+</table>
+
